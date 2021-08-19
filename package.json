@@ -1,0 +1,24 @@
+{
+  "name": "sended-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/ambujraj/sended-backend.git"
+  },
+  "author": "Ambuj",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://gitlab.com/ambujraj/sended-backend/issues"
+  },
+  "homepage": "https://gitlab.com/ambujraj/sended-backend#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.12"
+  }
+}
