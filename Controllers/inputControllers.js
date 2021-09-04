@@ -25,11 +25,12 @@ exports.upload = function (req, res) {
     
         aws.config.setPromisesDependency();
         const s3 = new aws.S3();
+        const fileName = Date.now()+"_"+req.file.originalname;
         var params = {
           //ACL: 'public-read',
           Bucket: process.env.S3_BUCKET,
           Body: fs.createReadStream(req.file.path),
-          Key: `${req.file.originalname}`
+          Key: fileName
         };
     
         s3.upload(params, (err, data) => {
@@ -40,24 +41,40 @@ exports.upload = function (req, res) {
           if (data) {
             //fs.unlinkSync(req.file.path); // Empty temp folder --> // might case concurrency issue
             
-            let shortLink = req.body.shortLink;
-            let s3FileLink = data.Location;
-            let macAddress = req.body.macAddress;
-            let ipAddress = req.body.ipAddress;
+            //get presigned url
+            var params = {
+                Bucket: process.env.S3_BUCKET,
+                Key: fileName,
+                Expires: 432000
+            };
+            s3.getSignedUrl('getObject', params, (err, url) => {
+                if (err) {
+                    console.log('Error while trying to get signed url', err);
+                }
+                if (url) {
+                    //console.log(url);
+                    let shortLink = req.body.shortLink;
+                    let s3FileLink = data.Location;
+                    let presignedUrl = url;
+                    let macAddress = req.body.macAddress;
+                    let ipAddress = req.body.ipAddress;
 
-            const dbFunction = require('../middlewares/DBFunction');
-            dbFunction.addToDB(shortLink, s3FileLink, macAddress, ipAddress);
+                    const dbFunction = require('../middlewares/DBFunction');
+                    dbFunction.addToDB(shortLink, s3FileLink, presignedUrl, macAddress, ipAddress);
 
-            if(err){
-                res.json({
-                    status: "Error",
-                    message: err,
-                });
-            }
-            res.json({
-                status: "Success",
-                message: "File uploaded successfully",
-                link: shortLink
+                    if(err){
+                        res.json({
+                            status: "Error",
+                            message: err,
+                        });
+                    }
+                    //res.status(200);
+                    res.json({
+                        status: "Success",
+                        message: "File uploaded successfully",
+                        link: shortLink
+                    });
+                }
             });
           }
         });

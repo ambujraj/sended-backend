@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
  const inputSchema = mongoose.Schema({
      shortLink: { type: String, default: '' },
      s3FileLink: { type: String, default: '' },
+     presignedUrl: { type: String, default: '' },
      macAddress: { type: String, default: '' },
      ipAddress: { type: String, default: '' },
      createdAt: { type: String, default: '' },
