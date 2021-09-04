@@ -53,13 +53,14 @@ exports.upload = function (req, res) {
                 Key: fileName,
                 Expires: 432000
             };
-            s3.getSignedUrl('getObject', params, (err, url) => {
+            s3.getSignedUrl('getObject', params, async (err, url) => {
                 if (err) {
                     console.log('Error while trying to get signed url', err);
                 }
                 if (url) {
                     //console.log(url);
-                    let shortLink = req.body.shortLink;
+                    const urlShortener = require('../middlewares/shortUrl');
+                    let shortLink = await urlShortener.shorten(url);
                     let s3FileLink = data.Location;
                     let presignedUrl = url;
                     let macAddress = req.body.macAddress;
