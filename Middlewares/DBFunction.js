@@ -23,7 +23,7 @@ exports.addToDB = function addToDB(shortLink, s3FileLink, presignedUrl, macAddre
         // });
 
         //temp code - to be replaced by log
-        console.log('New Short Link: '+shortLink);
+        console.log('New File Uploaded: '+input.shortLink);
     });
 };
 
