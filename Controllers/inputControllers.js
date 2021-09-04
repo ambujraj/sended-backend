@@ -1,5 +1,7 @@
-
-Inputs = require('../models/inputs');
+const Inputs = require('../models/inputs');
+const aws = require('aws-sdk');
+const fs = require('fs');
+require('dotenv').config();
 
 // Handle index actions
 // -- For testing purposes only
@@ -20,43 +22,46 @@ exports.index = function (req, res) {
 };
 
 exports.upload = function (req, res) {
+    
+        aws.config.setPromisesDependency();
+        const s3 = new aws.S3();
+        var params = {
+          //ACL: 'public-read',
+          Bucket: process.env.S3_BUCKET,
+          Body: fs.createReadStream(req.file.path),
+          Key: `${req.file.originalname}`
+        };
+    
+        s3.upload(params, (err, data) => {
+          if (err) {
+            console.log('Error while trying to upload to S3 bucket', err);
+          }
+    
+          if (data) {
+            //fs.unlinkSync(req.file.path); // Empty temp folder --> // might case concurrency issue
+            
+            let shortLink = req.body.shortLink;
+            let s3FileLink = data.Location;
+            let macAddress = req.body.macAddress;
+            let ipAddress = req.body.ipAddress;
 
-    var shortLink = req.body.shortLink;
-    var s3FileLink = req.body.s3FileLink;
-    var macAddress = req.body.macAddress;
-    var ipAddress = req.body.ipAddress;
+            const dbFunction = require('../middlewares/DBFunction');
+            dbFunction.addToDB(shortLink, s3FileLink, macAddress, ipAddress);
 
-    addToDB(shortLink, s3FileLink, macAddress, ipAddress);
-
-    res.json({
-        message: 'Upload Completed.',
-        link: shortLink
-    });
+            if(err){
+                res.json({
+                    status: "Error",
+                    message: err,
+                });
+            }
+            res.json({
+                status: "Success",
+                message: "File uploaded successfully",
+                link: shortLink
+            });
+          }
+        });
+    
 }
-
-// Handle create inputs data actions
-var addToDB = function addToDB(shortLink, s3FileLink, macAddress, ipAddress) {
-    var today = new Date(Date.now());
-    var formattedDate = today.toUTCString();
-
-    var input = new Inputs();
-    input.shortLink = shortLink? shortLink : input.shortLink;
-    input.s3FileLink = s3FileLink? s3FileLink : input.s3FileLink;
-    input.macAddress = macAddress ? macAddress : input.macAddress;
-    input.ipAddress = ipAddress ? ipAddress : input.ipAddress;
-    input.createdAt = formattedDate;
-
-    input.save(function (err) {
-        // if (err)
-        //  res.json(err);
-        // res.json({
-        //     message: 'New Input Created!',
-        //     data: input
-        // });
-
-        //temp code - to be replaced by log
-        console.log('New Short Link: '+shortLink);
-    });
-};
 
 
