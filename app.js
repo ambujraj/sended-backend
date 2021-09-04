@@ -2,22 +2,14 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-
+const config = require('./config');
 
 connect();
-app.get('/', (req, res) => {
-    res.send('Hello World!');
-});
-
-app.get('*', (req, res) => {
-    res.send('404');
-});
-
-
-var port = process.env.PORT || 3000;
-app.listen(port, () => {
-    console.log('listening on port 3000!');
-});
+function listen() {
+  var port = process.env.PORT || 3000;
+  app.listen(port);
+  console.log('Express app started on port ' + port);
+}
 
 
 function connect() {
