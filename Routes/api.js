@@ -7,5 +7,13 @@ router.get('/', function (req, res){
     });
 });
 
+// Import Input controller
+const inputController = require('../controllers/inputControllers');
+
+// Input routes
+router.route('/upload')
+    .post(inputController.upload)
+    .get(inputController.index);
+
 // Export API routes
 module.exports = router;
