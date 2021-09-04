@@ -39,7 +39,7 @@ exports.upload = function (req, res) {
           }
     
           if (data) {
-            //fs.unlinkSync(req.file.path); // Empty temp folder --> // might case concurrency issue
+            fs.unlinkSync(req.file.path); // Empty temp folder 
             
             //get presigned url
             var params = {
