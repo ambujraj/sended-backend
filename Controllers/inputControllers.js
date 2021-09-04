@@ -31,7 +31,7 @@ exports.upload = function (req, res) {
         aws.config.setPromisesDependency();
         const s3 = new aws.S3();
         const fileName = Date.now()+"_"+req.file.originalname;
-        //console.log(req.file.size);
+        
         var params = {
           //ACL: 'public-read',
           Bucket: process.env.S3_BUCKET,
