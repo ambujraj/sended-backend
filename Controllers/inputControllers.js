@@ -22,10 +22,16 @@ exports.index = function (req, res) {
 };
 
 exports.upload = function (req, res) {
-    
+        if(req.file.size>1e+9){
+            res.json({
+                status: "Error",
+                message: "File size too large"
+            });
+        }
         aws.config.setPromisesDependency();
         const s3 = new aws.S3();
         const fileName = Date.now()+"_"+req.file.originalname;
+        //console.log(req.file.size);
         var params = {
           //ACL: 'public-read',
           Bucket: process.env.S3_BUCKET,
