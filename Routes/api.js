@@ -16,8 +16,8 @@ router.route('/upload')
     
     .get(inputController.index)
     .post(
-        multer({ dest: 'temp/', limits: { fieldSize: 1e+9 } }).single(
-          'file'
+        multer({ dest: 'temp/', limits: { fieldSize: 1e+9 } }).array(
+          'files', 20
         ),
         inputController.upload
       );
