@@ -4,8 +4,6 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const apiRoutes = require('./routes/api');
 const logger = require('./services/logger');
-const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('./swagger.json');
 require('dotenv').config();
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -16,11 +14,16 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   next();
 });
-app.use(
-  '/api-docs',
-  swaggerUi.serve, 
-  swaggerUi.setup(swaggerDocument)
-);
+if(process.env.NODE_ENV === 'development'){
+  const swaggerUi = require('swagger-ui-express');
+  const swaggerDocument = require('./swagger.json');
+  app.use(
+    '/docs',
+    swaggerUi.serve, 
+    swaggerUi.setup(swaggerDocument)
+  );
+}
+
 
 // Connect to Mongoose
 connect();
