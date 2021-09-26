@@ -1,0 +1,41 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "version": "1.0.0",
+      "title": "sended-backend",
+      "description": "Sended Backend API",
+      "license": {
+        "name": "GNU General Public License version 3",
+        "url": "https://opensource.org/licenses/GPL-3.0"
+      }
+    },
+    "host": "localhost:3000",
+    "basePath": "/api",
+    "schemes": ["http"],
+    "consumes": ["application/json"],
+    "produces": ["application/json"],
+    "paths": {
+      "/upload": {
+        "post": {
+          "tags": ["Upload"],
+          "description": "POST /upload",
+          "consumes": ["multipart/form-data"],
+          "parameters": [
+            {
+              "name": "file",
+              "in": "formData",
+              "type": "file",
+              "description": "File that we want to send"
+            }
+          ],
+          "produces": ["application/json"],
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          }
+        }
+      
+        }
+    }
+}

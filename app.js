@@ -14,12 +14,19 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   next();
 });
+if(process.env.NODE_ENV === 'development'){
+  const swaggerUi = require('swagger-ui-express');
+  const swaggerDocument = require('./swagger.json');
+  app.use(
+    '/docs',
+    swaggerUi.serve, 
+    swaggerUi.setup(swaggerDocument)
+  );
+}
+
 
 // Connect to Mongoose
 connect();
-
-// Send message for default URL
-app.get('/', (req, res) => res.send('Hello from Sended. You can navigate to /api for more.'));
 
 // Use Api routes in the App
 app.use('/api', apiRoutes);
