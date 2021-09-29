@@ -37,19 +37,20 @@ app.use('*', (req, res)=> res.status(400).json({
 }));
 
 // Listen to port
-function listen() {
-    var port = process.env.PORT || 3000;
-    app.listen(port, () => {
-        logger.log('info', "[app] Listening on PORT: "+port, {tags: 'app,port'});
-    });
-}
+// function listen() {
+//     var port = process.env.PORT || 3000;
+//     app.listen(port, () => {
+//         logger.log('info', "[app] Listening on PORT: "+port, {tags: 'app,port'});
+//     });
+// }
+
+
 
 
 function connect() {
     mongoose.connection
       .on('error', errorMessage)
-      .on('disconnected', connect)
-      .once('open', listen);
+      .on('disconnected', connect);
     return mongoose.connect(process.env.MONGODB_URL, {
       keepAlive: 1,
       useNewUrlParser: true,
@@ -59,3 +60,5 @@ function connect() {
 function errorMessage(){
     logger.log('error', "[app] Error connecting to MongoDB.", {tags: 'app,mongo'});
 }
+
+module.exports = app;

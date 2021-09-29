@@ -16,7 +16,7 @@ router.get('/upload', (req, res)=>{
 });
 
 router.post('/upload', (req, res) => {
-var upload = multer({  dest: 'temp/', limits: { fieldSize: 1e+9 } }).single('file');
+var upload = multer({  dest: '/tmp/', limits: { fieldSize: 1e+9 } }).single('file');
 upload(req, res, (err) => {
     if (err) {
       res.status(400).json({

@@ -4,7 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "nodemon local.js",
+    "deploy": "serverless deploy"
   },
   "repository": {
     "type": "git",
@@ -18,6 +19,7 @@
   "homepage": "https://gitlab.com/ambujraj/sended-backend#readme",
   "dependencies": {
     "aws-sdk": "^2.983.0",
+    "aws-serverless-express": "^3.4.0",
     "bitly": "^7.1.2",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
@@ -31,5 +33,8 @@
     "swagger-ui-express": "^4.1.6",
     "winston": "^3.3.3",
     "winston-aws-cloudwatch": "^3.0.0"
+  },
+  "devDependencies": {
+    "serverless": "^2.60.0"
   }
 }

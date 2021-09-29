@@ -1,0 +1,14 @@
+service: sended-backend
+
+provider:
+ name: aws
+ runtime: nodejs14.x
+ stage: production
+ region: ap-south-1
+
+functions:
+ api:
+   handler: lambda.universal
+   events:
+     - http: ANY {proxy+}
+     - http: ANY /

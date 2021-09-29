@@ -17,6 +17,7 @@ exports.addToDB = function addToDB(shortLink, s3FileLink, presignedUrl, macAddre
     input.save(function (err) {
         if (err){
             logger.log('error', "[DBFunction] "+err, {tags: 'DBFunction,db'});
+            
             res.status(408).json({
                 status: 'Error',
                 message: 'Something is Wrong.'
