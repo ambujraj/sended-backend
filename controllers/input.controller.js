@@ -3,8 +3,8 @@ const aws = require('aws-sdk');
 const fs = require('fs');
 const logger = require('../services/logger');
 const s3 = new aws.S3();
-const urlShortener = require('../middlewares/shortUrl');
-const dbFunction = require('../middlewares/DBFunction');
+const urlShortener = require('../middlewares/shorturl');
+const dbFunction = require('../middlewares/dbfunction');
 require('dotenv').config();
 
 
