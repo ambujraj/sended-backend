@@ -4,9 +4,11 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const apiRoutes = require('./routes/api.route');
 const redirectRoutes = require('./routes/redirect.route');
+const rateLimit = require("express-rate-limit");
 const logger = require('./services/logger');
 require('dotenv').config();
 
+app.set('trust proxy', 1);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(function(req, res, next) {
@@ -15,11 +17,26 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   next();
 });
+const writeLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, 
+  max: 15
+});
+const readLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, 
+  max: 30
+});
+const otherLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, 
+  max: 10
+});
+
+
 if(process.env.NODE_ENV === 'development'){
   const swaggerUi = require('swagger-ui-express');
   const swaggerDocument = require('./swagger.json');
   app.use(
     '/docs',
+    otherLimiter,
     swaggerUi.serve, 
     swaggerUi.setup(swaggerDocument)
   );
@@ -30,13 +47,13 @@ if(process.env.NODE_ENV === 'development'){
 connect();
 
 // Use Api routes in the App
-app.use('/api', apiRoutes);
+app.use('/api',writeLimiter, apiRoutes);
 
 // For Calling the Short URL
-app.use('/share', redirectRoutes);
+app.use('/share',readLimiter, redirectRoutes);
 
 // For Invalid URL
-app.use('*', (req, res)=> res.status(400).json({
+app.use('*',otherLimiter, (req, res)=> res.status(400).json({
     message: 'Invalid URL'
 }));
 
