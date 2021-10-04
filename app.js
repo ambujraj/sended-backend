@@ -3,6 +3,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const apiRoutes = require('./routes/api.route');
+const redirectRoutes = require('./routes/redirect.route');
 const logger = require('./services/logger');
 require('dotenv').config();
 
@@ -30,6 +31,9 @@ connect();
 
 // Use Api routes in the App
 app.use('/api', apiRoutes);
+
+// For Calling the Short URL
+app.use('/share', redirectRoutes);
 
 // For Invalid URL
 app.use('*', (req, res)=> res.status(400).json({
