@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const multer = require('multer');
-const inputController = require('../controllers/inputControllers');
+const inputController = require('../controllers/input.controller');
 
 router.get('/', (req, res) => {
     res.status(200).json({

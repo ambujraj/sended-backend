@@ -1,4 +1,4 @@
-const Inputs = require('../models/inputs');
+const Inputs = require('../models/inputs.model');
 const logger = require('../services/logger');
 
 // Handle create inputs data actions
