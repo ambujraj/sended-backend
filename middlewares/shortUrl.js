@@ -1,9 +1,10 @@
-const BitlyClient = require('bitly').BitlyClient;
+const nanoid = require('nanoid/async');
+const dbFunction = require('./DBFunction');
 require('dotenv').config();
-const bitly = new BitlyClient(process.env.BITLY_ACCESS_TOKEN);
 
-
-exports.shorten = async function (longUrl) {
-    const res = await bitly.shorten(longUrl);
-    return String(res.link);
+exports.shorten = async function (originalURL) {
+    let slug = await nanoid(6);
+    slug = slug.toLowerCase();
+    dbFunction.insertShortUrl(slug, originalURL);  
+    return slug;
 }
