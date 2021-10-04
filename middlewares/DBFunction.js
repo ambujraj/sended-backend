@@ -66,11 +66,7 @@ exports.getOriginalURL = async (slug) => {
     
 }
 
-exports.updateHit = (slug) => {
-    Shorts.findOneAndUpdate({slug: slug}, {$inc: {count: 1}}, function (err, short) {
-        if (err) {
-            return null;
-        }
-        return short.count;
-    });  
+exports.updateHit = async (slug) => {
+    let short = await Shorts.findOneAndUpdate({slug: slug}, {$inc: {'clicks': 1}});
+    return short.clicks+1;
 }
