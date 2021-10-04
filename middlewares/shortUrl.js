@@ -1,5 +1,5 @@
 const nanoid = require('nanoid/async');
-const dbFunction = require('./DBFunction');
+const dbFunction = require('./dbfunction');
 require('dotenv').config();
 
 exports.shorten = async function (originalURL) {

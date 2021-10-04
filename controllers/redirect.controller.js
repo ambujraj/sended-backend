@@ -1,4 +1,4 @@
-const dbFunction = require('../middlewares/DBFunction');
+const dbFunction = require('../middlewares/dbfunction');
 const logger = require('../services/logger');
 require('dotenv').config();
 
