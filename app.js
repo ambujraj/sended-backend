@@ -53,9 +53,18 @@ app.use('/api',writeLimiter, apiRoutes);
 app.use('/share',readLimiter, redirectRoutes);
 
 // For Invalid URL
-app.use('*',otherLimiter, (req, res)=> res.status(400).json({
-    message: 'Invalid URL'
-}));
+app.use('*',otherLimiter, (req, res, next)=> {
+  let key = req.get('X-API-KEY');
+    if(key==process.env.API_KEY){
+      res.status(400).json({
+        message: 'Invalid URL'
+    });
+    }
+    else{
+      res.status(401).send('Unauthorized');
+    }
+  
+});
 
 // Listen to port
 // function listen() {
