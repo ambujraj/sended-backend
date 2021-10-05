@@ -58,7 +58,15 @@ exports.getOriginalURL = async (slug) => {
             originalURL = null;
         }
         else{
-            originalURL = short.original_url;
+            try{
+                if(short==null){
+                    throw new Error("No such short url");
+                }
+                originalURL = short.original_url;
+            }
+            catch(err){
+                logger.log('error', "[redirect.controller] "+err, {tags: 'redirect.controller,called'});
+            }
         }
         
     }).clone();
