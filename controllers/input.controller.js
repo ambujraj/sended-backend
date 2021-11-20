@@ -1,10 +1,10 @@
-const Inputs = require('../models/inputs');
+const Inputs = require('../models/inputs.model');
 const aws = require('aws-sdk');
 const fs = require('fs');
 const logger = require('../services/logger');
 const s3 = new aws.S3();
-const urlShortener = require('../middlewares/shortUrl');
-const dbFunction = require('../middlewares/DBFunction');
+const urlShortener = require('../middlewares/shorturl');
+const dbFunction = require('../middlewares/dbfunction');
 require('dotenv').config();
 
 
@@ -40,7 +40,7 @@ exports.upload = (req, res) => {
         
             s3.upload(params, (err, data) => {
             if (err) {
-                logger.log('error', "[inputControllers] Error while trying to upload to S3 bucket: "+err, {tags: 'inputControllers,s3'});
+                logger.log('error', "[input.controller] Error while trying to upload to S3 bucket: "+err, {tags: 'inputControllers,s3'});
                 res.status(408).json({
                     status: "Error",
                     message: 'Something is Wrong.',
@@ -58,7 +58,7 @@ exports.upload = (req, res) => {
                 };
                 s3.getSignedUrl('getObject', params, async (err, url) => {
                     if (err) {
-                        logger.log('error', "[inputControllers] Error while trying to get signed url: "+err, {tags: 'inputControllers,s3'});
+                        logger.log('error', "[input.controller] Error while trying to get signed url: "+err, {tags: 'inputControllers,s3'});
                         res.status(408).json({
                             status: "Error",
                             message: 'Something is Wrong.',
@@ -66,23 +66,23 @@ exports.upload = (req, res) => {
                         
                     }
                     if (url) {
-                        let shortLink = await urlShortener.shorten(url);
+                        let shortLink = process.env.BASE_URL + "/share/" + await urlShortener.shorten(url);
                         let s3FileLink = data.Location;
                         let presignedUrl = url;
-                        let macAddress = req.body.macAddress;
                         let ipAddress = req.body.ipAddress;
 
-                        dbFunction.addToDB(shortLink, s3FileLink, presignedUrl, macAddress, ipAddress);
+                        // TODO Add async await to db functions
+                        dbFunction.addToDB(shortLink, s3FileLink, presignedUrl, ipAddress);
 
                         if(err){
-                            logger.log('error', "[inputControllers]: "+err, {tags: 'inputControllers,db'});
+                            logger.log('error', "[input.controller]: "+err, {tags: 'inputControllers,db'});
                             res.status(408).json({
                                 status: "Error",
                                 message: 'Something is Wrong.',
                             });
                         }
                         
-                        logger.log('info', "[inputControllers] New File Uploaded: "+shortLink, {tags: 'inputControllers'});
+                        logger.log('info', "[input.controller] New File Uploaded: "+shortLink, {tags: 'input.controller'});
                         res.status(200).json({
                             status: "Success",
                             message: "File uploaded successfully",
@@ -93,8 +93,4 @@ exports.upload = (req, res) => {
             }
             });
         }
-        
-    
 }
-
-
